@@ -264,12 +264,12 @@ module Gym
 
           selected_provisioning_profiles.each do |current_bundle_identifier, current_profile_name|
             available_export_types.each do |current_to_try, matching_type|
-              next unless current_profile_name.to_s.downcase.include?(current_to_try.to_s.downcase)
+              next unless current_profile_name.to_s.downcase.include?("match " + current_to_try.to_s.downcase)
 
               # Check if there is a mismatch between the name and the selected export method
               # Example
               #
-              #   current_profile_name = "me.themoji.app.beta App Store""
+              #   current_profile_name = "match AppStore me.themoji.app.beta"
               #   current_to_try = "app store"
               #   matching_type = :appstore
               #   selected_export_method = "enterprise"
