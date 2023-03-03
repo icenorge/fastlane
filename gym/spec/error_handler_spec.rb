@@ -61,7 +61,7 @@ Code signing is required for product type 'Application' in SDK 'iOS 11.0'
 
       Gym.config[:export_method] = 'app-store'
       Gym.config[:export_options][:provisioningProfiles] = {
-        'com.sample.app' => 'In House Ad Hoc'
+        'com.sample.app' => 'match InHouse com.sample.app'
       }
 
       expect(UI).to receive(:error).with(/There seems to be a mismatch between/).once
@@ -74,9 +74,9 @@ Code signing is required for product type 'Application' in SDK 'iOS 11.0'
       mock_gym_path(@output)
       expect(UI).to receive(:build_failure!).with("Error building the application - see the log above", error_info: @output)
 
-      Gym.config[:export_method] = 'enterprise'
+      Gym.config[:export_method] = 'ad-hoc'
       Gym.config[:export_options][:provisioningProfiles] = {
-        'com.sample.app' => 'In House Ad Hoc' # `enterprise` take precedence over `ad-hoc`
+        'com.sample.app' => 'match AdHoc com.sample.app'
       }
 
       expect(UI).to receive(:error).with(/There seems to be a mismatch between/).never
@@ -84,5 +84,20 @@ Code signing is required for product type 'Application' in SDK 'iOS 11.0'
 
       Gym::ErrorHandler.handle_build_error(@output)
     end
+
+    it "does not print mismatch if the selected profile does not follow naming convention by starting with match" do
+        mock_gym_path(@output)
+        expect(UI).to receive(:build_failure!).with("Error building the application - see the log above", error_info: @output)
+  
+        Gym.config[:export_method] = 'ad-hoc'
+        Gym.config[:export_options][:provisioningProfiles] = {
+          'com.sample.app' => 'InHouse profile with custom name'
+        }
+  
+        expect(UI).to receive(:error).with(/There seems to be a mismatch between/).never
+        allow(UI).to receive(:error)
+  
+        Gym::ErrorHandler.handle_build_error(@output)
+      end  
   end
 end
