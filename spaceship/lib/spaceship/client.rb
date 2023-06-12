@@ -533,7 +533,8 @@ module Spaceship
 
           if try_upgrade_2fa_later(response)
             store_cookie
-            fetch_olympus_session
+            # Workaround for issue https://github.com/fastlane/fastlane/issues/21301
+            #fetch_olympus_session
             return true
           end
 
